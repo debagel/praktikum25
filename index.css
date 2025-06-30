@@ -1,0 +1,48 @@
+body {
+    min-height: 100vh;
+    font-family: Helvetica, sans-serif;
+    background: linear-gradient(45deg, rgb(42, 29, 60), #022ebc);
+}
+
+h1{
+    font-size: 75px;
+    color: rgb(76, 0, 255);
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    text-align: center;
+}
+h2{
+    font-size: 30px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-align: center;
+    padding-top: 90px;
+}
+
+button,
+.button {
+  display: block;
+  width: 10rem;
+  background-color: rgb(5, 82, 148);
+  color: #8cddec;
+  border: none;
+  border-radius: 3px;
+  margin-top: 13rem;
+  cursor: pointer;
+  transition: all 0.5s;
+  text-decoration: none;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+a{
+    font-size: 75px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.highscore{
+  text-align: center;
+}
+
+.plattform{
+
+}
