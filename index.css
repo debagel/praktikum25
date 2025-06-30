@@ -44,5 +44,20 @@ a{
 }
 
 .plattform{
-
+    display: block;
+    width: 8rem;
+    background-color: #0314ff;
+    color: #0314ff;
+    border: none;
+    border-radius: 3px;
+    margin-top: 13rem;
+}
+.plattform2{
+    display: block;
+    width: 4rem;
+    background-color: #8103ff;
+    color: #8103ff;
+    border: none;
+    border-radius: 3px;
+    margin-top: 13rem;   
 }
