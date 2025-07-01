@@ -1,12 +1,14 @@
 body {
     min-height: 100vh;
     font-family: Helvetica, sans-serif;
-    background: linear-gradient(45deg, rgb(42, 29, 60), #022ebc);
+    background: linear-gradient(180deg, rgb(208, 0, 0), #370101);
 }
 
 h1{
     font-size: 75px;
-    color: rgb(76, 0, 255);
+    background-image: linear-gradient(rgb(98, 0, 0), rgb(33, 1, 1));
+    color: transparent;
+    background-clip: text;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     text-align: center;
 }
@@ -21,8 +23,11 @@ button,
 .button {
   display: block;
   width: 10rem;
-  background-color: rgb(5, 82, 148);
-  color: #8cddec;
+  height: auto;
+  font-size: 2rem;
+  color: black;
+  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  background-image: linear-gradient(rgb(87, 87, 87), rgb(126, 126, 126));
   border: none;
   border-radius: 3px;
   margin-top: 13rem;
@@ -34,11 +39,7 @@ button,
   margin-right: auto;
 }
 
-a{
-    font-size: 75px;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-}
 
-.highscore{
+.score {
   text-align: center;
 }
