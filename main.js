@@ -100,8 +100,9 @@ let ball = {
 };
 const ballElement = document.getElementById("ball")
 
-let ballvx = 40
-let ballvy = 40
+// Beim Laden der Seite:
+let ballvx = parseFloat(localStorage.getItem("ballvx")) || 40;
+let ballvy = parseFloat(localStorage.getItem("ballvy")) || 40;
 
 function gameLoop(time) {
     if(time) {
@@ -116,6 +117,7 @@ function gameLoop(time) {
         //moveBat(deltams)
         lastTime = time
         requestAnimationFrame(gameLoop)
+        lvlUp();
     }
 }
 
@@ -173,54 +175,94 @@ function brickCollision() {
         const brickTop = borderHeight - brickRect.top;
         const brickBottom = borderHeight - brickRect.bottom;
 
+        const blx1 = brickRect.left - 5
+        const blx2 = brickRect.left + 5
+        const brx1 = brickRect.right - 5
+        const brx2 = brickRect.right + 5
+
+
         if (
             ball.bottomLeft.x >= brickRect.left &&
             ball.bottomLeft.x <= brickRect.right &&
             ball.bottomLeft.y <= brickTop &&
             ball.bottomLeft.y >= brickBottom
         ) {
-            // Collision detected
-            console.log("Collision detected!");
-
-            /*if(hitSide(brick)) {
-              ballvx = -ballvx; // Richtung umkehren
-            } else {
-              ballvy = -ballvy; // Richtung umkehren
-            }  */
-           ballvy = -ballvy; 
-            brick.remove();    // Brick entfernen
-            break;            // Nur einen Brick pro Frame entfernen
+              console.log("Any collision detected with brick!");
+              if (ball.bottomLeft.x >= blx1 && ball.bottomLeft.x <= blx2 || ball.bottomLeft.x >= brx1 && ball.bottomLeft.x <= brx2) { 
+                console.log("Collision detected with brick on the side!");
+                ballvx = -ballvx; 
+              } else {
+                console.log("Collision detected with brick!");
+                ballvy = -ballvy;
+              }
+             brick.remove(); // Remove the brick on collision
+              updateScore(); // Update the score when a brick is hit
         }
     }
-}
-//console.log(ballRect.bottom, plattformRect.top)
-
-function hitSide(b) {
-  const ballRect = ballElement.getBoundingClientRect();
-  const bLeft = b.getBoundingClientRect().left;
-  const bRight = b.getBoundingClientRect().right;
-  
-  // Check if the ball is hitting the left or right side of the brick
-  if (ballRect.right >= bLeft && ballRect.left <= bRight) {
-    return true; // Hit side
+    
   }
+    
+    
+
   
-  return false; // Hit top or bottom
-}
+
+
+
 
 
 
 function loose() {
   if (ball.bottomLeft.y <= 0) {
     console.log("You lost!");
+    // Score, Level und Geschwindigkeit zurücksetzen
+    localStorage.setItem("score", 0);
+    localStorage.setItem("currentLvl", 1);
+    localStorage.setItem("ballvx", 40);
+    localStorage.setItem("ballvy", 40);
+    localStorage.removeItem("lvlUp");
     window.location.href = "lose.html"; 
-    
   }
 }
+
+// Beim Laden der Seite:
+let currentLvl = parseInt(localStorage.getItem("currentLvl")) || 1;
+const lvlElement = document.getElementById("lvl");
+lvlElement.innerHTML = currentLvl;
 
 function win() {
   if (ball.bottomLeft.y >= borderHeight) {
     console.log("You won!");
-    
+    localStorage.setItem("lvlUp", "true");
+    // Speichere das neue Level
+    localStorage.setItem("currentLvl", currentLvl + 1);
+    location.reload();
+    ballvx = ballvx + 5;
+    ballvy = ballvy + 5;
   }
+}
+
+// Beim Laden der Seite:
+let scoreIncrement = parseInt(localStorage.getItem("scoreIncrement")) || 10;
+
+// ... Rest deines Codes ...
+
+function loose() {
+  if (ball.bottomLeft.y <= 0) {
+    console.log("You lost!");
+    // Score, Level und Geschwindigkeit zurücksetzen
+    localStorage.setItem("score", 0);
+    localStorage.setItem("currentLvl", 1);
+    localStorage.setItem("ballvx", 40);
+    localStorage.setItem("ballvy", 40);
+    localStorage.removeItem("lvlUp");
+    window.location.href = "lose.html"; 
+  }
+}
+
+function updateScore() {
+  const scoreElement = document.getElementById("scoreDisplay");
+  let score = parseInt(localStorage.getItem("score")) || 0;
+  score = score + scoreIncrement;
+  scoreElement.innerText = score;
+  localStorage.setItem("score", score);
 }
