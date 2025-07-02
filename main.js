@@ -221,5 +221,6 @@ function loose() {
 function win() {
   if (ball.bottomLeft.y >= borderHeight) {
     console.log("You won!");
+    
   }
 }
