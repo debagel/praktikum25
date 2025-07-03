@@ -1,7 +1,7 @@
 const plattform = document.getElementById("plattform")
 let moveInterval = null;
 
-if (!plattform.style.left) {
+if (plattform && !plattform.style.left) {
   plattform.style.left = "47%"
 }
 
@@ -54,34 +54,42 @@ window.addEventListener("keyup", (e) => {
 
 
 const bricksPerRow = 10;
-const brickRows = 6;
+const brickRows = 1;
 const brickWidth = 9.8; 
 const brickHeight = 5; 
 const brickMargin = 0.2; 
 
-for (let row = 0; row < brickRows; row++) {
-    for (let col = 0; col < bricksPerRow; col++) {
-        const brick = document.createElement("div");
-        brick.className = "brick";
-        brick.style.left = `${col * (brickWidth + brickMargin)}%`;
-        brick.style.bottom = `${80 - row * (brickHeight + brickMargin)}%`;
-        document.getElementById("blockSpace").appendChild(brick);
-        brick.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`; 
-        brick.style.width = brickWidth + "%";
-        brick.style.height = brickHeight + "%";
-        brick.style.position = "absolute";
-        brick.style.border = "1px solid black";
-        brick.style.boxSizing = "border-box";
-        brick.style.zIndex = "1"; 
-        brick.style.margin = "0";
-    }
+if(document.body.classList.contains("game")) {
+  // update score display
+  updateScoreDisplay();
+
+  // add bricks
+  for (let row = 0; row < brickRows; row++) {
+      for (let col = 0; col < bricksPerRow; col++) {
+          const brick = document.createElement("div");
+          brick.className = "brick";
+          brick.style.left = `${col * (brickWidth + brickMargin)}%`;
+          brick.style.bottom = `${80 - row * (brickHeight + brickMargin)}%`;
+          document.getElementById("blockSpace").appendChild(brick);
+          brick.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`; 
+          brick.style.width = brickWidth + "%";
+          brick.style.height = brickHeight + "%";
+          brick.style.position = "absolute";
+          brick.style.border = "1px solid black";
+          brick.style.boxSizing = "border-box";
+          brick.style.zIndex = "1"; 
+          brick.style.margin = "0";
+      }
+  }
 }
 
 let lastTime = 0
 let batvx = 0
 let batSpeed = 100
 
-requestAnimationFrame(gameLoop)
+if(document.body.classList.contains("game")) {
+  requestAnimationFrame(gameLoop);
+}
 
 function gameLoop(time) {
     if(time) {
@@ -196,7 +204,8 @@ function brickCollision() {
                 ballvy = -ballvy;
               }
              brick.remove(); // Remove the brick on collision
-              updateScore(); // Update the score when a brick is hit
+             updateScore(); // Update the score when a brick is hit
+              
         }
     }
     
@@ -227,7 +236,9 @@ function loose() {
 // Beim Laden der Seite:
 let currentLvl = parseInt(localStorage.getItem("currentLvl")) || 1;
 const lvlElement = document.getElementById("lvl");
-lvlElement.innerHTML = currentLvl;
+if(lvlElement) {
+  lvlElement.innerHTML = currentLvl;
+}
 
 function win() {
   if (ball.bottomLeft.y >= borderHeight) {
@@ -236,8 +247,6 @@ function win() {
     // Speichere das neue Level
     localStorage.setItem("currentLvl", currentLvl + 1);
     location.reload();
-    ballvx = ballvx + 5;
-    ballvy = ballvy + 5;
   }
 }
 
@@ -255,14 +264,43 @@ function loose() {
     localStorage.setItem("ballvx", 40);
     localStorage.setItem("ballvy", 40);
     localStorage.removeItem("lvlUp");
+    localStorage.setItem("scoreIncrement", 10); // Setze den Score-Increment-Wert zurück
     window.location.href = "lose.html"; 
   }
 }
 
 function updateScore() {
-  const scoreElement = document.getElementById("scoreDisplay");
   let score = parseInt(localStorage.getItem("score")) || 0;
-  score = score + scoreIncrement;
-  scoreElement.innerText = score;
+  score += scoreIncrement; // Erhöhe den Score um den Score-Increment-Wert
   localStorage.setItem("score", score);
+  updateScoreDisplay(); // Aktualisiere die Anzeige
 }
+
+function updateScoreDisplay() {
+  const scoreElement = document.getElementById("scoreDisplay");
+  scoreElement.innerHTML = parseInt(localStorage.getItem("score")) || 0; // Aktualisiere die Anzeige
+}
+  
+ /* const yourScoreElement = document.getElementById("yourScore");
+  yourScoreElement.innerText = score; // Update the score display on the lose page*/
+
+
+function lvlUp() {
+  if (localStorage.getItem("lvlUp") === "true") {
+    localStorage.removeItem("lvlUp"); // Entferne den lvlUp-Status
+  scoreIncrement = scoreIncrement + 10; // Erhöhe den Score-Increment-Wert um 10
+  localStorage.getItem("ballvx") || 40; // Hole die aktuelle ballvx
+  localStorage.getItem("ballvy") || 40; // Hole die aktuelle ballvy
+  ballvx += 10; // Erhöhe die horizontale Geschwindigkeit um 10
+  ballvy += 10; // Erhöhe die vertikale Geschwindigkeit um 10
+  console.log("Level up! New ball speed:", ballvx, ballvy);
+  localStorage.setItem("ballvx", ballvx);
+  localStorage.setItem("ballvy", ballvy);
+  localStorage.setItem("scoreIncrement", scoreIncrement); // Speichere den neuen Score
+  score += scoreIncrement; // Erhöhe den Score um den Score-Increment-Wert
+  }
+ 
+}
+
+
+
