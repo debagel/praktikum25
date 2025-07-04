@@ -54,7 +54,7 @@ window.addEventListener("keyup", (e) => {
 
 
 const bricksPerRow = 10;
-const brickRows = 1;
+let brickRows = parseInt(localStorage.getItem("brickRows")) || 1;
 const brickWidth = 9.8; 
 const brickHeight = 5; 
 const brickMargin = 0.2; 
@@ -126,6 +126,7 @@ function gameLoop(time) {
         lastTime = time
         requestAnimationFrame(gameLoop)
         lvlUp();
+        setLives(); // Update lives display
     }
 }
 
@@ -220,18 +221,7 @@ function brickCollision() {
 
 
 
-function loose() {
-  if (ball.bottomLeft.y <= 0) {
-    console.log("You lost!");
-    // Score, Level und Geschwindigkeit zurücksetzen
-    localStorage.setItem("score", 0);
-    localStorage.setItem("currentLvl", 1);
-    localStorage.setItem("ballvx", 40);
-    localStorage.setItem("ballvy", 40);
-    localStorage.removeItem("lvlUp");
-    window.location.href = "lose.html"; 
-  }
-}
+
 
 // Beim Laden der Seite:
 let currentLvl = parseInt(localStorage.getItem("currentLvl")) || 1;
@@ -259,13 +249,8 @@ function loose() {
   if (ball.bottomLeft.y <= 0) {
     console.log("You lost!");
     // Score, Level und Geschwindigkeit zurücksetzen
-    localStorage.setItem("score", 0);
-    localStorage.setItem("currentLvl", 1);
-    localStorage.setItem("ballvx", 40);
-    localStorage.setItem("ballvy", 40);
-    localStorage.removeItem("lvlUp");
-    localStorage.setItem("scoreIncrement", 10); // Setze den Score-Increment-Wert zurück
-    window.location.href = "lose.html"; 
+    
+    looselives(); // Rufe die Funktion auf, um Leben zu verlieren
   }
 }
 
@@ -286,7 +271,13 @@ function updateScoreDisplay() {
 
 
 function lvlUp() {
+ 
   if (localStorage.getItem("lvlUp") === "true") {
+    localStorage.removeItem("lvlUp");
+    // ... Score und Ballgeschwindigkeit erhöhen ...
+    brickRows += 1;
+    localStorage.setItem("brickRows", brickRows);
+    // ... Rest wie gehabt ...
     localStorage.removeItem("lvlUp"); // Entferne den lvlUp-Status
   scoreIncrement = scoreIncrement + 10; // Erhöhe den Score-Increment-Wert um 10
   localStorage.getItem("ballvx") || 40; // Hole die aktuelle ballvx
@@ -298,9 +289,36 @@ function lvlUp() {
   localStorage.setItem("ballvy", ballvy);
   localStorage.setItem("scoreIncrement", scoreIncrement); // Speichere den neuen Score
   score += scoreIncrement; // Erhöhe den Score um den Score-Increment-Wert
+  console.log(currentLvl)
   }
  
 }
 
+let lives = parseInt(localStorage.getItem("lives")) || 3;
+
+function looselives() {
+  if (lives <= 1) {
+    localStorage.setItem("score", 0);
+    localStorage.setItem("currentLvl", 1);
+    localStorage.setItem("ballvx", 40);
+    localStorage.setItem("ballvy", 40);
+    localStorage.removeItem("lvlUp");
+    localStorage.setItem("scoreIncrement", 10); 
+    localStorage.setItem("lives", 0);
+    localStorage.setItem("brickRows", 1); // Reset brick rows to 1
+    window.location.href = "lose.html";
+  } else {
+    lives -= 1;
+    localStorage.setItem("lives", lives);
+    console.log("Lives left:", lives);
+    window.location.href = "gameplay.html"; 
+  }
+}
 
 
+function setLives() {
+  const livesElement = document.querySelector(".lives span");
+  if (livesElement) {
+    livesElement.innerText = localStorage.getItem("lives") || 3; 
+  }
+}
